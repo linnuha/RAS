@@ -129,8 +129,7 @@
     <!-- Modal for Preview -->
     <div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content
-">
+            <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="previewModalLabel">Preview</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -152,6 +151,7 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kembali</button>
                     <button type="button" class="btn btn-success" onclick="printPage()">Print</button>
                     <button type="button" class="btn btn-primary" onclick="exportPdf()">Ekspor ke PDF</button>
+                    <button type="button" class="btn btn-warning" onclick="exportJpg()">Ekspor ke JPG</button>
                 </div>
             </div>
         </div>
@@ -195,66 +195,109 @@
             }
         }
 
-        function showPreviewPopup() {
-            const almarhum = document.getElementById("inputAlmarhum").value;
-            const yuswo = document.getElementById("inputYuswo").value;
-            const pidalem = document.getElementById("inputPidalem").value;
-            const dinten = document.getElementById("inputDinten").value;
-            const wanci = document.getElementById("inputWanci").value;
-            const dinten2 = document.getElementById("inputDinten2").value;
-            const wanci2 = document.getElementById("inputWanci2").value;
-            const wonten = document.getElementById("inputWontenIng").value;
-            const wontenIng2 = document.getElementById("inputWontenIng2").value;
+        function exportJpg() {
+            const element = document.getElementById("previewContent");
+            html2canvas(element, { scale: 2 }).then((canvas) => {
+                canvas.toBlob((blob) => {
+                    const filename = "preview-content.jpg";
+                    saveAs(blob, filename);
+                }, "image/jpeg", 1);
+            }).catch((error) => {
+                console.error("Error generating JPG:", error);
+                alert("Terjadi kesalahan saat membuat JPG. Periksa log konsol untuk detail lebih lanjut.");
+            });
+        }
 
-            let content = `
-            <div class="card-header d-flex align-items-center" style="border-bottom: 2px solid #000000;">
-                <img src="logo.png" alt="Logo" style="width: 100px; height: 100px; margin-right: 15px;">
-                <div class="text-center flex-grow-1">
-                    <h2 style="font-size: 20px;">KARANG TARUNA UNIT</h2>
-                    <h1 style="font-size: 35px;">RUKUN AGAWE SANTOSA (RAS)</h1>
-                    <p class="mb-0">Jl. Parangtritis Km 6,5 Ngijo Dk. Demangan Bangunharjo Sewon Bantul</p>
+        function showPreviewPopup() {
+    const almarhum = document.getElementById("inputAlmarhum").value;
+    const yuswo = document.getElementById("inputYuswo").value;
+    const pidalem = document.getElementById("inputPidalem").value;
+    const dinten = document.getElementById("inputDinten").value;
+    const wanci = document.getElementById("inputWanci").value;
+    const dinten2 = document.getElementById("inputDinten2").value;
+    const wanci2 = document.getElementById("inputWanci2").value;
+    const wonten = document.getElementById("inputWontenIng").value;
+    const wontenIng2 = document.getElementById("inputWontenIng2").value;
+
+    let content = `
+        <div class="card-header d-flex align-items-center" style="border-bottom: 2px solid #000000;">
+            <img src="logo.png" alt="Logo" style="width: 100px; height: 100px; margin-right: 15px;">
+            <div class="text-center flex-grow-1">
+                <h2 style="font-size: 20px;">KARANG TARUNA UNIT</h2>
+                <h1 style="font-size: 35px;">RUKUN AGAWE SANTOSA (RAS)</h1>
+                <p class="mb-0">Jl. Parangtritis Km 6,5 Ngijo Dk. Demangan Bangunharjo Sewon Bantul</p>
+            </div>
+        </div>
+        <h2><center>PAWARTOS LELAYU</center></h2>
+        <div id="previewContent" style="line-height: 1;">
+            <p class="text-end mb-0" style="line-height: 1.5;">Katur Panjenengan: .............................................</p>
+            <p class="text-end mb-0" style="line-height: 1.5;">Wonten Ing: ................................................</p>
+            <p>Assalamu'alaikum Wr. Wb.</p>
+            <p style="text-indent: 40px;">Innalillahi Wa Innaillaihi Roji'un</p>
+            <p>Sampun katimbalan sowan wonten ing Ngarsa Dalem Gusti Allah SWT, inggih punika:</p>
+            <p><center><strong>Almarhum:</strong> ${almarhum}</center></p>
+            <p><center><strong>Yuswo:</strong> ${yuswo}</center></p>
+            <p><strong>Pidalem:</strong> ${pidalem}</p>
+            <p><strong>Dinten:</strong> ${dinten}</p>
+            <p><strong>Wanci:</strong> ${wanci}</p>
+            <p><strong>Wonten Ing:</strong> ${wonten}</p>
+            <p style="text-indent: 40px;"><strong>Jenazah Badhe Kasarekaken:</strong></p>
+            <p><strong>Dinten:</strong> ${dinten2}</p>
+            <p><strong>Wanci:</strong> ${wanci2}</p>
+            <p><strong>Wonten Ing:</strong> ${wontenIng2}</p>
+            <p style="text-indent: 40px;">Awit saking meniko dumateng para Bapak/Ibu/Saudara mbok bilih mboten
+            wonten alangan satunggal punopo, kasuwun rawuhipun saperlu paring Do'a soho 
+            derek belo sungkowo soho paring pangumatan ingkang pungkasan dumateng Almarhum. Awit Saking kawigatosanipun, sedoyo kaluarga namung 
+            saget ngaturaken agunging panuwun.</p>
+            <p>Wassalamu'alaikum Wr. Wb.</p>
+        </div>
+    `;
+const ahliWarisContainer = document.getElementById("ahliWarisContainer");
+    content += `<p class="text-center" style="line-height: 0.8; margin-bottom: 10px;"><strong>Ahli Waris:</strong></p>`;
+
+    let ahliWarisList = [];
+    for (let i = 0; i < ahliWarisContainer.children.length; i += 2) {
+        const namaWaris = ahliWarisContainer.children[i].querySelector("input").value;
+        const hubunganWaris = ahliWarisContainer.children[i + 1].querySelector("input").value;
+        ahliWarisList.push(`${namaWaris} (${hubunganWaris})`);
+    }
+
+    // Membuat tata letak dua kolom yang lebih berdekatan
+    content += `
+        <div class="d-flex justify-content-center">
+            <div class="d-flex" style="width: 50%; justify-content: space-evenly; gap: 20px;">
+                <!-- Kolom kiri -->
+                <div style="width: 45%; text-align: left;">
+    `;
+
+    const midIndex = Math.ceil(ahliWarisList.length / 2);
+
+    // Konten kolom kiri
+    for (let i = 0; i < midIndex; i++) {
+        content += `<p style="line-height: 1.5;">${ahliWarisList[i]}</p>`;
+    }
+
+    content += `
+                </div>
+                <!-- Kolom kanan -->
+                <div style="width: 45%; text-align: left;">
+    `;
+
+    // Konten kolom kanan
+    for (let i = midIndex; i < ahliWarisList.length; i++) {
+        content += `<p style="line-height: 1.5;">${ahliWarisList[i]}</p>`;
+    }
+
+    content += `
                 </div>
             </div>
-                <h2><center>PAWARTOS LELAYU</center></h2>
-                </div>
-               <div id="previewContent" style="line-height: 0.8;">
-                    <p class="text-end" class="mb-0">Katur Panjenengan: .............................................</p>
-                    <p class="text-end" class="mb-0">Wonten Ing: ................................................</p>
-                    <p>Assalamu'alaikum Wr. Wb.</p>
-                    <p style="text-indent: 40px;">Innalillahi Wa Innaillaihi Roji'un</p>
-                    <p>Sampun katimbalan sowan wonten ing Ngarsa Dalem Gusti Allah SWT, inggih punika:</p>
-                    <p><center><strong>Almarhum:</strong> ${almarhum}</center></p>
-                    <p><center><strong>Yuswo:</strong> ${yuswo}</center></p>
-                    <p><strong>Pidalem:</strong> ${pidalem}</p>
-                    <p><strong>Dinten:</strong> ${dinten}</p>
-                    <p><strong>Wanci:</strong> ${wanci}</p>
-                    <p><strong>Wonten Ing:</strong> ${wonten}</p>
-                    <p style="text-indent: 40px;"><strong>Jenazah Badhe Kasarekaken:</strong></p>
-                    <p><strong>Dinten:</strong> ${dinten2}</p>
-                    <p><strong>Wanci:</strong> ${wanci2}</p>
-                    <p><strong>Wonten Ing:</strong> ${wontenIng2}</p>
-                    <p style="text-indent: 40px;">Awit saking meniko dumateng para Bapak/Ibu/Saudara mbok bilih mboten
-                    wonten alangan satunggal</p><p> punopo,kasuwun rawuhipun saperlu paring Do'a soho 
-                    derek belo sungkowo soho paring pangumatan</p>
-                    <p>ingkang pungkasan dumateng Almarhum.</p>
-                    <p>Wassalamu'alaikum Wr. Wb.</p>
-                </div>
-            `;
+        </div>
+    `;
 
-            const ahliWarisContainer = document.getElementById("ahliWarisContainer");
-            content += `<p class="text-center"><strong>Ahli Waris:</strong></p>`;
-
-            for (let i = 0; i < ahliWarisContainer.children.length; i += 2) {
-                const namaWaris = ahliWarisContainer.children[i].querySelector("input").value;
-                const hubunganWaris = ahliWarisContainer.children[i + 1].querySelector("input").value;
-
-                content += `<p><center><strong>${namaWaris}</strong> (${hubunganWaris})</center></p>`;
-            }
-
-            document.getElementById("previewContent").innerHTML = content;
-            const previewModal = new bootstrap.Modal(document.getElementById('previewModal'));
-            previewModal.show();
-        }
+    document.getElementById("previewContent").innerHTML = content;
+    const previewModal = new bootstrap.Modal(document.getElementById('previewModal'));
+    previewModal.show();
+}
 
         function exportPdf() {
             const { jsPDF } = window.jspdf;
@@ -287,15 +330,6 @@
                 console.error("Error generating PDF:", error);
                 alert("Terjadi kesalahan saat membuat PDF. Periksa log konsol untuk detail lebih lanjut.");
             });
-        }
-
-        function printPage() {
-            const printContent = document.getElementById("previewContent").innerHTML;
-            const originalContent = document.body.innerHTML;
-            document.body.innerHTML = printContent;
-            window.print();
-            document.body.innerHTML = originalContent;
-            location.reload();
         }
     </script>
 </body>
