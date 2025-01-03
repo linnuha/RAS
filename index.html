@@ -229,7 +229,7 @@
             </div>
         </div>
         <h2><center>PAWARTOS LELAYU</center></h2>
-        <div id="previewContent" style="line-height: 1;">
+        <div id="previewContent" style="line-height: 1.1;">
             <p class="text-end mb-0" style="line-height: 1.5;">Katur Panjenengan: .............................................</p>
             <p class="text-end mb-0" style="line-height: 1.5;">Wonten Ing: ................................................</p>
             <p>Assalamu'alaikum Wr. Wb.</p>
@@ -245,9 +245,8 @@
             <p><strong>Dinten:</strong> ${dinten2}</p>
             <p><strong>Wanci:</strong> ${wanci2}</p>
             <p><strong>Wonten Ing:</strong> ${wontenIng2}</p>
-            <p style="text-indent: 40px;">Awit saking meniko dumateng para Bapak/Ibu/Saudara mbok bilih mboten
-            wonten alangan satunggal punopo, kasuwun rawuhipun saperlu paring Do'a soho 
-            derek belo sungkowo soho paring pangumatan ingkang pungkasan dumateng Almarhum. Awit Saking kawigatosanipun, sedoyo kaluarga namung 
+            <p style="text-indent: 40px; class="justified-indent"">Awit saking meniko dumateng para Bapak/Ibu/Saudara mbok bilih mboten
+            wonten alangan satunggal punopo, kasuwun rawuhipun saperlu paring Do'a soho derek belo sungkowo soho paring pangumatan ingkang pungkasan dumateng Almarhum. Awit Saking kawigatosanipun, sedoyo kaluarga namung 
             saget ngaturaken agunging panuwun.</p>
             <p>Wassalamu'alaikum Wr. Wb.</p>
         </div>
@@ -330,6 +329,14 @@ const ahliWarisContainer = document.getElementById("ahliWarisContainer");
                 console.error("Error generating PDF:", error);
                 alert("Terjadi kesalahan saat membuat PDF. Periksa log konsol untuk detail lebih lanjut.");
             });
+        }
+        function printPage() {
+            const printContent = document.getElementById("previewContent").innerHTML;
+            const originalContent = document.body.innerHTML;
+            document.body.innerHTML = printContent;
+            window.print();
+            document.body.innerHTML = originalContent;
+            location.reload();
         }
     </script>
 </body>
